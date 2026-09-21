@@ -1,18 +1,18 @@
 # Tugas 1 — Analisis Pitfall FoodGo
 
-**Kelompok:** [nama kelompok]
+**Kelompok:** 3
 
 | Nama | NIM | Kontribusi |
 |---|---|---|
-| [nama 1] | [nim] | [pitfall/bagian yang dikerjakan] |
+| Ita Fatmawati | 103072400124 | pitfall 1 |
 | [nama 2] | [nim] | [pitfall/bagian yang dikerjakan] |
 | [nama 3] | [nim] | [pitfall/bagian yang dikerjakan] |
 
-## Pitfall 1: [nama pitfall] — ditulis oleh [nama]
+## Pitfall 1: Latency is zero — ditulis oleh Ita Fatmawati
 
-**Bukti di skenario:** [kutip/paraphrase bagian skenario]
+**Bukti di skenario:** Tim menemukan bahwa kode mereka menulis asumsi seperti # network is always reliable, no need for retry dan tidak ada timeout sama sekali pada pemanggilan antar service (modul pesanan memanggil modul pembayaran dan menunggu tanpa batas waktu).
 
-**Kenapa ini keliru:** [penjelasan]
+**Kenapa ini keliru:** Karena menunggu tanpa batas waktu merupakan ciri-ciri dari kekeliruan di dalam proses pengembangan sistem, tepatnya pada pembuatan waktu timeout. Hal ini seolah-olah merepresentasikan bahwa programmer menganggap proses transmisi data dan eksekusi di jaringan terjadi secara instan(latencynya 0), sehingga tidak menyiapkan case apabila pemrosesan membutuhkan waktu lama.
 
 **Dampak ke FoodGo:** [mekanisme kegagalan konkret]
 
