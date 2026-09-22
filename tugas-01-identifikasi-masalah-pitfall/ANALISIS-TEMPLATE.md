@@ -4,7 +4,7 @@
 
 | Nama                     | NIM          | Kontribusi |
 | ------------------------ | ------------ | ---------- |
-| Ita Fatmawati            | 103072400124 | pitfall 1  |
+| Ita Fatmawati            | 103072400124 | pitfall 1,2  |
 | Heilyn Alfreda Aritonang | 103072400102 | pitfall 1  |
 
 ## Pitfall 1: Latency is zero — ditulis oleh Ita Fatmawati, Heilyn Alfreda
