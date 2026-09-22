@@ -2,10 +2,10 @@
 
 **Kelompok:** 3
 
-| Nama                     | NIM          | Kontribusi |
-| ------------------------ | ------------ | ---------- |
-| Ita Fatmawati            | 103072400124 | pitfall 1,2  |
-| Heilyn Alfreda Aritonang | 103072400102 | pitfall 1  |
+| Nama                     | NIM          | Kontribusi  |
+| ------------------------ | ------------ | ----------- |
+| Ita Fatmawati            | 103072400124 | pitfall 1,2 |
+| Heilyn Alfreda Aritonang | 103072400102 | pitfall 1   |
 
 ## Pitfall 1: Latency is zero — ditulis oleh Ita Fatmawati, Heilyn Alfreda
 
@@ -35,9 +35,17 @@
 
 ---
 
-## Pitfall 3: [nama pitfall] — ditulis oleh [nama]
+## Pitfall 3: Network is always reliable — ditulis oleh Heilyn Alfreda
 
-(ulangi struktur di atas)
+**Bukti di skenario:** Tim menemukan bahwa kode mereka menulis asumsi seperti # network is always reliable, no need for retry.
+
+**Kenapa ini keliru:** Hal tersebut keliru karena programmer menganggap bahwa paket data dalam jaringan akan selalu bisa diandalkan/sampai ke tujuan tanpa adanya loss.
+
+**Dampak ke FoodGo:** Hal tersebut membuat sistem tidak bisa melakukan percobaan ulang (retry) saat permintaan tidak berhasil dan menjadi gagal.
+
+**Solusi desain awal:** Membuat sistem untuk melakukan percobaan ulang secara bertahap agar tidak membebani server target.
+
+**Trade-off:** Sistem akan menjadi lebih kompleks dan berpotensi spam permintaan berulang ke server target jika tidak dirancang dengan baik.
 
 ---
 
