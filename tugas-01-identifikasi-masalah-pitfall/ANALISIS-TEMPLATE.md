@@ -21,9 +21,17 @@
 
 ---
 
-## Pitfall 2: [nama pitfall] — ditulis oleh [nama]
+## Pitfall 2: Single Point of Failure karena Arsitektur Monolitik — ditulis oleh Ita Fatmawati
 
-(ulangi struktur di atas)
+**Bukti di skenario:** "Saat trafik naik, satu server yang menangani semua modul (pesanan, pembayaran, notifikasi kurir) kewalahan karena semuanya berjalan di satu proses monolitik yang sama"
+
+**Kenapa ini keliru:** Pernyataan di atas menjelaskan struktur dalam sistem FoodGo, yaitu satu server menangani semua modul sekaligus. Jika trafik naik, semua beban akan masuk pada satu server yang sama, sehingga server bisa overload/ kewalahan.
+
+**Dampak ke FoodGo:** Aplikasi menjadi lambat, beberapa permintaan mengalami timeout, dan jika server crash, maka semua modul yang terhubung tidak akan bisa digunakan atau terganggu.
+
+**Solusi desain awal:** Memisahkan setiap modul pelayanan agar dapat berjalan secara independent
+
+**Trade-off:** Meningkatkan biaya dan beban programmer karena membutuhkan infrastruktur tambahan dan pengelolaan service yang kompleks.
 
 ---
 
