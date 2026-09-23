@@ -51,7 +51,5 @@
 
 ## Kesimpulan Kelompok
 
-[Ringkasan: jika FoodGo memperbaiki ketiga pitfall ini, apa arsitektur yang disarankan secara garis besar? Kaitkan dengan Tugas 2.]
-
 Secara garis besar, arsitektur yang kami sarankan adalah Publish-Subscribe yang mungkin akan kami kombinasikan dengan Service-Oriented Architecture (SOA).
 Karena, masalah utama yang kami identifikasi terletak pada pemanggilan antarmodul yang saling menunggu tanpa batas waktu. Sehingga, diperlukan Pub-Sub untuk mengubah gaya arsitektur berbasis pesan menjadi asinkron. Alasan dikombinasikan dengan SOA ialah untuk memecah fungsi-fungsi menjadi layanan yang terpisah, sehingga kegagalan suatu layanan tidak akan memengaruhi keseluruhan sistem.
