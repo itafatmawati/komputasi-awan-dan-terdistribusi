@@ -9,11 +9,11 @@
 
 ## Pitfall 1: Latency is zero — ditulis oleh Ita Fatmawati, Heilyn Alfreda
 
-**Bukti di skenario:** Tim menemukan bahwa kode mereka menulis asumsi seperti # network is always reliable, no need for retry dan tidak ada timeout sama sekali pada pemanggilan antar service (modul pesanan memanggil modul pembayaran dan menunggu tanpa batas waktu).
+**Bukti di skenario:** "tidak ada timeout sama sekali pada pemanggilan antar service (modul pesanan memanggil modul pembayaran dan menunggu tanpa batas waktu)".
 
-**Kenapa ini keliru:** Karena menunggu tanpa batas waktu merupakan ciri-ciri dari kekeliruan di dalam proses pengembangan sistem, tepatnya pada pembuatan waktu timeout. Hal ini seolah-olah merepresentasikan bahwa programmer menganggap proses transmisi data dan eksekusi di jaringan terjadi secara instan(latencynya 0), sehingga tidak menyiapkan case apabila pemrosesan membutuhkan waktu lama.
+**Kenapa ini keliru:** karena programmer tidak menyiapkan mekanisme untuk menangani latency, seperti apabila memanggil modul pembayaran, respons dari modul pembayaran sangat mungkin terjadi keterlambatan, sehingga apabila itu terjadi karena sistem tidak menentukan batas waktu, maka proses akan terus menunggu tanpa batas waktu
 
-**Dampak ke FoodGo:** Sistem mengalami kegagalan. Hal tersebut disebabkan karena adanya banyak permintaan, misalnya modul pesanan memanggil modul pembayaran. Permintaan tersebut akan menumpuk karena tidak adanya sistem timeout yang membuat server melambat, penuh, dan crash.
+**Dampak ke FoodGo:** Sistem mengalami kegagalan. Hal tersebut disebabkan karena adanya banyak permintaan, misalnya modul pesanan memanggil modul pembayaran. Permintaan tersebut akan menumpuk, karena setiap permintaan yang menunggu akan selalu menggunakan/menahan resource, sehingga apabila trafik naik dan permintaan yang lain juga mengalami hal yang sama, maka hal ini lah yang dapat membuat permintaan menumpuk sehingga server melambat, penuh, dan crash.
 
 **Solusi desain awal:** Membuat sistem timeout.
 
@@ -25,13 +25,13 @@
 
 **Bukti di skenario:** "Saat trafik naik, satu server yang menangani semua modul (pesanan, pembayaran, notifikasi kurir) kewalahan karena semuanya berjalan di satu proses monolitik yang sama"
 
-**Kenapa ini keliru:** Pernyataan di atas menjelaskan struktur dalam sistem FoodGo, yaitu satu server menangani semua modul sekaligus. Jika trafik naik, semua beban akan masuk pada satu server yang sama, sehingga server bisa overload/ kewalahan.
+**Kenapa ini keliru:** Pernyataan di atas menjelaskan struktur dalam sistem FoodGo, yaitu satu server menangani semua modul sekaligus. Jika trafik naik, semua beban akan masuk pada satu server yang sama, sehingga server bisa overload/kewalahan, dan karena semua modul terhubung ke satu server yang sama, maka apabila server tersebut overload, tentu semua modul akan ikut terpengaruhi.
 
-**Dampak ke FoodGo:** Aplikasi menjadi lambat, beberapa permintaan mengalami timeout, dan jika server crash, maka semua modul yang terhubung tidak akan bisa digunakan atau terganggu.
+**Dampak ke FoodGo:** Aplikasi menjadi lambat, beberapa permintaan mengalami timeout, lalu jika server mengalami crash, maka semua modul yang terhubung tidak akan bisa digunakan atau terganggu.
 
-**Solusi desain awal:** Memisahkan setiap modul pelayanan agar dapat berjalan secara independent
+**Solusi desain awal:** Memisahkan setiap modul pelayanan agar dapat berjalan secara independent(setiap layanan tidak bergantung pada satu proses monolitik)
 
-**Trade-off:** Meningkatkan biaya dan beban programmer karena membutuhkan infrastruktur tambahan dan pengelolaan service yang kompleks.
+**Trade-off:** Meningkatkan biaya dan beban programmer karena membutuhkan infrastruktur tambahan(jika ditambahkan server/instance berbeda setiap modul) dan pengelolaan service yang kompleks(harus mengelola banyak service yang ada).
 
 ---
 

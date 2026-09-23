@@ -8,9 +8,11 @@
 - Poin diskusi: Menganalisis dan memahami soal dan menjawab soal bersama
 - Perbedaan pendapat (jika ada): -
 
-## [Tanggal diskusi 2]
+## 23-09-2026
 
-- ...
+- Peserta: Itak, Heilyn
+- Poin diskusi: Memperbaiki kualitas jawaban 
+- Perbedaan pendapat (jika ada): -
 
 ## Review Silang
 
