@@ -16,7 +16,7 @@
 
 ## Review Silang
 
-- [Nama] mengomentari analisis [Nama lain]: ...
+- Ita Fatmawati mengomentari analisis Heilyn Alfreda: Jawaban kurang detail
 
 ## Log Penggunaan AI (Level 2)
 
@@ -38,3 +38,25 @@ The network is homogeneous: menganggap semua perangkat/jaringan memiliki karakte
 
 | 22-09-2026 | ChatGPT | apa itu _single point of failure\__ karena arsitektur monolitik | Single Point of Failure (SPOF) artinya satu bagian sistem yang kalau mengalami kegagalan, bisa menyebabkan bagian lain atau seluruh sistem ikut gagal.
 | dipahami, dikaitkan dengan soal, lalu olah/tulis dengan bahasa sendiri |
+
+| 23-09-2026 | GeminiAI | Architectural style: Layered, SOA, Peer-to-Peer, Publish-Subscribe. Berikan penjelasan mengenai keempat arsitektur di atas secara lengkap | 1. Layered Architecture (Arsitektur Berlapis)
+Arsitektur Berlapis (juga dikenal sebagai N-Tier Architecture) adalah salah satu pola arsitektur paling klasik dan umum digunakan. Dalam arsitektur ini, komponen sistem diorganisasikan ke dalam lapisan-lapisan (layers) terpisah secara horizontal, di mana setiap lapisan memiliki peran dan tanggung jawab spesifik. 2. Service-Oriented Architecture (SOA)
+SOA adalah gaya arsitektur berorientasi layanan di mana fungsi-fungsi aplikasi dibagi menjadi komponen-komponen terpisah yang disebut services (layanan). Layanan-layanan ini berkomunikasi satu sama lain melalui protokol standar over network. 3. Peer-to-Peer (P2P) Architecture
+Peer-to-Peer adalah gaya arsitektur terdesentralisasi di mana setiap node (disebut peer) dalam jaringan memiliki kedudukan dan kemampuan yang seimbang. Setiap peer dapat bertindak sebagai klien (meminta resource) sekaligus sebagai server (menyediakan resource). 4. Publish-Subscribe Architecture (Pub/Sub)
+Publish-Subscribe adalah gaya arsitektur berbasis pesan (messaging pattern) yang bersifat asinkron dan decoupled (tidak terikat secara langsung). Komponen dalam sistem berkomunikasi tanpa perlu mengetahui siapa penerima atau pengirim pesan tersebut.
+| Berdiskusi dengan tim dan memilih arsitektur yang paling sesuai|
+
+
+| 23-09-2026 | GeminiAI | apa kelebihan dan kekurangan jika arsitektur pub/sub dikombinasikan dengan layered? | Kelebihan: 1. Struktur Kode Rapi Sekaligus Tidak Saling Keterikatan (Decoupled) 2. Responsivitas Tinggi dan Beban Terurai (Non-blocking) 3. Skalabilitas Terarah (Targeted Scalability) 4. Ketahanan Sistem yang Lebih Baik (Fault Tolerance). Kekurangan : 1. Peningkatan Kompleksitas Sistem & Infrastruktur 2. Tantangan Konsistensi Data (Eventual Consistency) 3. Pelacakan Kesalahan (Debugging & Tracing) Lebih Sulit 4. Risiko Overhead Latensi untuk Proses Sederhana
+| hanya dipahami |
+
+| 23-09-2026 | GeminiAI | apa kelebihan dan kekurangan jika arsitektur pub/sub dikombinasikan dengan soa? | Kelebihan: 1. Mengurangi Keterikatan Antar-Layanan Enterprise (Loose Coupling) 2. Peningkatan Performa dan Responsivitas Sistem  3. Kemudahan Pengembangan dan Extensibility 4. Isolasi Kegagalan (Fault Isolation & Resilience). Kekurangan : 1. Kompleksitas Tata Kelola (Governance & Schema Evolution) 2. Hilangnya Alur Bisnis Terpusat yang Jelas (Orchestration Overhead) 3. Penanganan Transaksi Terdistribusi yang Sulit (Saga Pattern) 4. Double Processing dan Urutan Pesan (Message Ordering)
+| hanya dipahami |
+
+| 23-09-2026 | GeminiAI | identifikasi kelebihan dan kekurangan dan perbedaan keduanya | Layered + Pub/Sub : Fokus pada struktur internal satu aplikasi, Cocok untuk aplikasi tunggal/modular monolith, Biasanya menggunakan database utama yang sama, Cocok untuk background job, notifikasi, dan event internal aplikasi.
+SOA + Pub/Sub :  Fokus pada integrasi antar-sistem, Mencakup banyak aplikasi/domain enterprise, Setiap service mengelola data miliknya sendiri, Cocok untuk transaksi bisnis skala besar, seperti perbankan, e-commerce, dan logistik.
+| Berdiskusi dengan tim untuk memilih pilihan arsitektur yang cocok|
+
+
+
+
