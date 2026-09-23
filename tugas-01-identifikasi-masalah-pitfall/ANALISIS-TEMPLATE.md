@@ -37,7 +37,7 @@
 
 ## Pitfall 3: Network is always reliable — ditulis oleh Heilyn Alfreda
 
-**Bukti di skenario:** Tim menemukan bahwa kode mereka menulis asumsi seperti # network is always reliable, no need for retry.
+**Bukti di skenario:** "Tim menemukan bahwa kode mereka menulis asumsi seperti # network is always reliable, no need for retry"
 
 **Kenapa ini keliru:** Hal tersebut keliru karena programmer menganggap bahwa paket data dalam jaringan akan selalu bisa diandalkan/sampai ke tujuan tanpa adanya kemungkinan kegagalan komunikasi.
 
