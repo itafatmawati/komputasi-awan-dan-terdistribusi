@@ -15,9 +15,9 @@
 
 **Dampak ke FoodGo:** Sistem mengalami kegagalan. Hal tersebut disebabkan karena adanya banyak permintaan, misalnya modul pesanan memanggil modul pembayaran. Permintaan tersebut akan menumpuk, karena setiap permintaan yang menunggu akan selalu menggunakan/menahan resource, sehingga apabila trafik naik dan permintaan yang lain juga mengalami hal yang sama, maka hal ini lah yang dapat membuat permintaan menumpuk sehingga server melambat, penuh, dan crash.
 
-**Solusi desain awal:** Membuat sistem timeout.
+**Solusi desain awal:** Membuat sistem timeout untuk menghindari case menunggu tanpa batas waktu (hanya menunggu sampai batas waktu yang ditentukan)
 
-**Trade-off:** Sistem akan menjadi lebih kompleks sehingga akan membebankan programmer dan memungkinkan pengguna melihat pesan kegagalan.
+**Trade-off:** Sistem akan menjadi lebih kompleks karena menambahkan penentuan batas waktu dan penanganannya saat terjadi, sehingga akan membebankan programmer dan memungkinkan pengguna melihat pesan kegagalan.
 
 ---
 
@@ -25,7 +25,7 @@
 
 **Bukti di skenario:** "Saat trafik naik, satu server yang menangani semua modul (pesanan, pembayaran, notifikasi kurir) kewalahan karena semuanya berjalan di satu proses monolitik yang sama"
 
-**Kenapa ini keliru:** Pernyataan di atas menjelaskan struktur dalam sistem FoodGo, yaitu satu server menangani semua modul sekaligus. Jika trafik naik, semua beban akan masuk pada satu server yang sama, sehingga server bisa overload/kewalahan, dan karena semua modul terhubung ke satu server yang sama, maka apabila server tersebut overload, tentu semua modul akan ikut terpengaruhi.
+**Kenapa ini keliru:** Pernyataan di atas menjelaskan struktur dalam sistem, yaitu satu server menangani semua modul sekaligus. Jika trafik naik, semua beban akan masuk pada satu server yang sama, sehingga server bisa overload/kewalahan, dan karena semua modul terhubung ke satu server yang sama, maka apabila server tersebut overload, tentu semua modul akan ikut terpengaruhi.
 
 **Dampak ke FoodGo:** Aplikasi menjadi lambat, beberapa permintaan mengalami timeout, lalu jika server mengalami crash, maka semua modul yang terhubung tidak akan bisa digunakan atau terganggu.
 
@@ -39,13 +39,13 @@
 
 **Bukti di skenario:** Tim menemukan bahwa kode mereka menulis asumsi seperti # network is always reliable, no need for retry.
 
-**Kenapa ini keliru:** Hal tersebut keliru karena programmer menganggap bahwa paket data dalam jaringan akan selalu bisa diandalkan/sampai ke tujuan tanpa adanya loss.
+**Kenapa ini keliru:** Hal tersebut keliru karena programmer menganggap bahwa paket data dalam jaringan akan selalu bisa diandalkan/sampai ke tujuan tanpa adanya kemungkinan kegagalan komunikasi.
 
-**Dampak ke FoodGo:** Hal tersebut membuat sistem tidak bisa melakukan percobaan ulang (retry) saat permintaan tidak berhasil dan menjadi gagal.
+**Dampak ke FoodGo:** Ketika permintaan dikirim dan terjadi kegagalan komunikasi, maka permintaan tersebut akan langsung gagal karena tidak adanya sistem retry dan proses layanan tersebut menjadi terganggu.
 
 **Solusi desain awal:** Membuat sistem untuk melakukan percobaan ulang secara bertahap agar tidak membebani server target.
 
-**Trade-off:** Sistem akan menjadi lebih kompleks dan berpotensi spam permintaan berulang ke server target jika tidak dirancang dengan baik.
+**Trade-off:** Sistem akan menjadi lebih kompleks dan berpotensi menerima permintaan berulang yang berlebihan ke server target jika tidak dirancang dengan baik.
 
 ---
 
