@@ -11,7 +11,22 @@ Melanjutkan Tugas 1: FoodGo butuh sistem yang **decoupled** agar tim kurir dan t
 1. Pilih **satu** gaya arsitektur utama: **Service-Oriented Architecture (SOA)** atau **Publish-Subscribe**. Boleh dikombinasikan (mis. SOA untuk service inti + Pub-Sub untuk notifikasi), tapi harus dijustifikasi kenapa kombinasi ini yang dipilih.
 2. Gambarkan minimal 4 komponen berikut dan interaksinya: modul Pesanan, modul Pembayaran, modul Kurir/Notifikasi, modul Katalog Resto (dan message broker/API gateway jika relevan).
 3. Jelaskan alur satu skenario penuh secara end-to-end di diagram (misalnya: pelanggan buat pesanan → bayar → resto terima notifikasi → kurir ditugaskan) — tunjukkan komponen mana berkomunikasi dengan siapa, dan **jenis komunikasinya** (sinkron/asinkron, request-response/event).
-4. Analisis tertulis: kenapa gaya ini mengatasi masalah *coupling* dari Tugas 1, dan apa trade-off-nya (mis. Pub-Sub menambah kompleksitas debugging karena alur tidak linear).
+4. Analisis tertulis: kenapa gaya ini mengatasi masalah _coupling_ dari Tugas 1, dan apa trade-off-nya (mis. Pub-Sub menambah kompleksitas debugging karena alur tidak linear).
+
+## Jawaban
+
+````markdown
+```mermaid
+graph LR
+    Client[Pelanggan] -->|Sinkron, HTTP GET| Katalog[Modul Katalog Resto]
+    Client -->|Sinkron, HTTP POST| Gateway[API Gateaway]
+    Gateway --> Pesanan[Modul Pesanan]
+
+    Pesanan -->|Sinkron, REST| Katalog
+    Pesanan -.->|Status: PENDING| Pesanan
+    Pesanan -->|Sinkron, REST| Bayar[Modul Pembayaran]
+```
+````
 
 ## Cara Membuat Diagram (Gratis, Cukup Laptop)
 
@@ -43,12 +58,12 @@ tugas-02-perancangan-arsitektur/
 
 ## Rubrik Penilaian (Tugas 2)
 
-| Komponen | Bobot | Kriteria |
-|---|---|---|
-| Ketepatan pemilihan gaya arsitektur | 20% | Justifikasi SOA/Pub-Sub sesuai kebutuhan *decoupling* di skenario |
-| Kelengkapan & kejelasan diagram | 30% | Semua komponen kunci ada, jenis komunikasi (sinkron/asinkron) jelas ditandai |
-| Analisis trade-off | 30% | Bukan hanya kelebihan — kekurangan/kompleksitas baru juga dibahas |
-| Proses & kontribusi kelompok | 20% | `JURNAL.md`, commit history |
+| Komponen                            | Bobot | Kriteria                                                                     |
+| ----------------------------------- | ----- | ---------------------------------------------------------------------------- |
+| Ketepatan pemilihan gaya arsitektur | 20%   | Justifikasi SOA/Pub-Sub sesuai kebutuhan _decoupling_ di skenario            |
+| Kelengkapan & kejelasan diagram     | 30%   | Semua komponen kunci ada, jenis komunikasi (sinkron/asinkron) jelas ditandai |
+| Analisis trade-off                  | 30%   | Bukan hanya kelebihan — kekurangan/kompleksitas baru juga dibahas            |
+| Proses & kontribusi kelompok        | 20%   | `JURNAL.md`, commit history                                                  |
 
 ## Batasan Penggunaan AI (Level 2)
 
