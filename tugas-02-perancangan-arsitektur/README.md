@@ -25,6 +25,12 @@ graph LR
     Pesanan -->|Sinkron, REST| Katalog
     Pesanan -.->|Status: PENDING| Pesanan
     Pesanan -->|Sinkron, REST| Bayar[Modul Pembayaran]
+
+    Bayar -->|Asinkron, Non-blocking| Broker[Broker]
+
+    Broker -->|Asinkron, Consume Event| Pesanan
+    Broker -->|Asinkron, Consume Event| Notif[Notifikasi Resto]
+    Broker -->|Asinkron, Consume Event| Kurir[Modul Kurir]
 ```
 ````
 
