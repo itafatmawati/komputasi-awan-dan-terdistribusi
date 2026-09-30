@@ -15,18 +15,23 @@ Melanjutkan Tugas 1: FoodGo butuh sistem yang **decoupled** agar tim kurir dan t
 
 ## Jawaban
 
+1. Arsitektur yang kami gunakan adalah Publish-Subscribe yang kami kombinasikan dengan Service-Oriented Architecture (SOA). Karena, masalah utama yang kami identifikasi terletak pada pemanggilan antarmodul yang masih bersifat sinkron dan memblokir (blocking). Sehingga, diperlukan Pub-Sub untuk mengubah gaya arsitektur berbasis pesan menjadi asinkron. Alasan dikombinasikan dengan SOA ialah untuk memecah fungsi-fungsi menjadi layanan yang terpisah, sehingga kegagalan suatu layanan tidak akan memengaruhi keseluruhan sistem.
+
+
+
+2. 
 ````markdown
 ```mermaid
 graph LR
     Client[Pelanggan] -->|Sinkron, HTTP GET| Katalog[Modul Katalog Resto]
-    Client -->|Sinkron, HTTP POST| Gateway[API Gateaway]
-    Gateway --> Pesanan[Modul Pesanan]
+    Client -->|Sinkron, HTTP POST| Gateway[API Gateway]
+    Gateway --> |Sinkron, HTTP POST| Pesanan[Modul Pesanan]
 
     Pesanan -->|Sinkron, REST| Katalog
     Pesanan -->|Status: PENDING| Pesanan
     Pesanan -->|Sinkron, REST| Bayar[Modul Pembayaran]
 
-    Bayar -->|Asinkron, Non-blocking| Broker[Broker]
+    Bayar -->|Asinkron, Publish Event| Broker[Broker]
 
     Broker -->|Asinkron, Consume Event| Pesanan
     Broker -->|Asinkron, Consume Event| Notif[Notifikasi Resto]
@@ -34,7 +39,9 @@ graph LR
 ```
 ````
 
-Alasan Pub/Sub dan SOA mengatasi Tugas 1 adalah menghapus cascading timeout, karena pada studi kasus 01, saat sistem kurir melambat, maka modul pesanan akan melambat. Dengan adanya Pub/Sub, Modul Pembayaran langsung mengembalikan respon ke pengguna setelah menerbitkan event ke Message Broker. Lalu, karena seluruh modul dibuat secara independen, maka saat modul kurir mengalami crash dan gagal jaringan sementara, proses checkout dan pembayaran pelanggan tetap berjalan secara normal dan tidak membatalkan transaksi karena pesanan akan tersimpan dalam message broker. Arsitektur ini memindahkan proses berat seperti penugasan kurir dan notifikasi resto ke latar belakang, sehingga waktu tunggu pengguna jauh lebih singkat.
+3. Pelanggan membaca katalog (sinkron, request-response, HTTP GET) ke Modul Katalog Resto -> pelanggan klik pesan sekarang -> API Gateway (sinkron, request-response, HTTP POST) -> Modul Pesanan (sinkron, request-response, HTTP POST) untuk mendaftarkan order -> Modul Pesanan melakukan stock hold ke Modul Katalog Resto (sinkron, request-response, REST) -> pesanan berstatus PENDING -> Modul Pesanan mengirim permintaan pembayaran ke Modul Pembayaran (sinkron, request-response, REST) -> setelah pembayaran selesai, Modul Pembayaran mengirim event pembayaran ke Broker (asinkron, Publish Event) -> Broker meneruskan event tersebut ke Modul Pesanan, Notifikasi Resto, dan Modul Kurir (asinkron, Consume Event).
+
+4. Alasan Pub/Sub dan SOA mengatasi Tugas 1 adalah menghapus cascading timeout, karena pada studi kasus 01, saat sistem kurir melambat, maka modul pesanan akan melambat. Dengan adanya Pub/Sub, Modul Pembayaran langsung mengembalikan respon ke pengguna setelah menerbitkan event ke Message Broker. Lalu, karena seluruh modul dibuat secara independen, maka saat modul kurir mengalami crash dan gagal jaringan sementara, proses checkout dan pembayaran pelanggan tetap berjalan secara normal dan tidak membatalkan transaksi karena pesanan akan tersimpan dalam message broker. Arsitektur ini memindahkan proses berat seperti penugasan kurir dan notifikasi resto ke latar belakang, sehingga waktu tunggu pengguna jauh lebih singkat. Lalu, untuk trade-off adalah Pub-Sub dan SOA membuat debugging lebih sulit. Hal ini disebabkan oleh alur yang sudah non-linear dan rumit, sehingga juga sulit untuk melacak error antar-modul. Lalu, status data antar-modul membutuhkan jeda waktu untuk melakukan sinkronisasi. API Gateway dan Message Broker juga menjadi bagian penting yang harus memiliki cadangan agar tidak menjadi titik kegagalan sistem.
 
 ## Cara Membuat Diagram (Gratis, Cukup Laptop)
 
