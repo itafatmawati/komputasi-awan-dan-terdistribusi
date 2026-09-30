@@ -23,7 +23,7 @@ graph LR
     Gateway --> Pesanan[Modul Pesanan]
 
     Pesanan -->|Sinkron, REST| Katalog
-    Pesanan -.->|Status: PENDING| Pesanan
+    Pesanan -->|Status: PENDING| Pesanan
     Pesanan -->|Sinkron, REST| Bayar[Modul Pembayaran]
 
     Bayar -->|Asinkron, Non-blocking| Broker[Broker]
