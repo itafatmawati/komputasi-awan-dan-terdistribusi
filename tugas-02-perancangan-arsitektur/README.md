@@ -34,6 +34,8 @@ graph LR
 ```
 ````
 
+Alasan Pub/Sub dan SOA mengatasi Tugas 1 adalah menghapus cascading timeout, karena pada studi kasus 01, saat sistem kurir melambat, maka modul pesanan akan melambat. Dengan adanya Pub/Sub, Modul Pembayaran langsung mengembalikan respon ke pengguna setelah menerbitkan event ke Message Broker. Lalu, karena seluruh modul dibuat secara independen, maka saat modul kurir mengalami crash dan gagal jaringan sementara, proses checkout dan pembayaran pelanggan tetap berjalan secara normal dan tidak membatalkan transaksi karena pesanan akan tersimpan dalam message broker. Arsitektur ini memindahkan proses berat seperti penugasan kurir dan notifikasi resto ke latar belakang, sehingga waktu tunggu pengguna jauh lebih singkat.
+
 ## Cara Membuat Diagram (Gratis, Cukup Laptop)
 
 Tidak perlu software berbayar. Dua opsi:
