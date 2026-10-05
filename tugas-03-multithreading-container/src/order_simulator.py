@@ -31,9 +31,19 @@ def process_order(order_id: int) -> None:
   # TODO 2: Tambahkan increment `processed_count` DI SINI.
     # Langkah 1: jalankan dulu tanpa lock (increment biasa: processed_count += 1)
     #            dan buktikan hasil akhirnya sering salah (< NUM_ORDERS).
+
+    # TANPA LOCK
+    # temp = processed_count
+    # time.sleep(0.0001)
+    # processed_count = temp + 1
+
     # Langkah 2: bungkus increment dengan `with lock:` dan buktikan hasilnya
     #            selalu tepat NUM_ORDERS. Simpan bukti kedua kondisi ini
     #            di JURNAL.md / folder bukti/.
+
+    # LOCK
+    with lock:
+        processed_count += 1
     pass
 
 
