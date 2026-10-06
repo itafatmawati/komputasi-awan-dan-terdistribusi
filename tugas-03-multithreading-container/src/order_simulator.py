@@ -33,18 +33,18 @@ def process_order(order_id: int) -> None:
     #            dan buktikan hasil akhirnya sering salah (< NUM_ORDERS).
 
     # TANPA LOCK
-    # temp = processed_count
-    # time.sleep(0.0001)
-    # processed_count = temp + 1
+    temp = processed_count
+    time.sleep(0.0001)
+    processed_count = temp + 1
 
     # Langkah 2: bungkus increment dengan `with lock:` dan buktikan hasilnya
     #            selalu tepat NUM_ORDERS. Simpan bukti kedua kondisi ini
     #            di JURNAL.md / folder bukti/.
 
     # LOCK
-    with lock:
-        processed_count += 1
-    pass
+    # with lock:
+    #     processed_count += 1
+    # pass
 
 
 def worker(order_ids: list) -> None:
