@@ -11,7 +11,12 @@
 
 ## Kendala Docker
 
-- Error yang ditemui saat `docker build`/`docker run` dan cara memperbaikinya: ...
+- Error yang ditemui saat `docker build`/`docker run` dan cara memperbaikinya: 
+
+- Hasil yang diperoleh setelah melakukan perubahan tidak terupdate dan masih berisi kode lama, cara memperbaikinya dengan mengulangi proses docker build.
+
+- Error ketika ingin push, cara memperbaikinya dengan "git add Dockerfile"
+
 
 ## Log Penggunaan AI (Level 2)
 
