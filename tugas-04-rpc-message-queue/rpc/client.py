@@ -28,6 +28,8 @@ def main():
 
     print("Memanggil proses_pembayaran('user1', 20000) ...")
     # TODO 3: panggil proxy.proses_pembayaran("user1", 20000) dan cetak hasilnya
+    print(proxy.proses_pembayaran("user1", 20000))
+
 
 
 if __name__ == "__main__":
