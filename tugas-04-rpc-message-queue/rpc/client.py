@@ -22,9 +22,10 @@ def main():
 
     end = time.time()
 
-    print("Hasil: ", result ) 
     print()
+    print("Saldo awal: ", result ) 
     print("Waktu tempuh: ", end - start ,"detik")
+    print()
 
     print("Memanggil proses_pembayaran('user1', 20000) ...")
     # TODO 3: panggil proxy.proses_pembayaran("user1", 20000) dan cetak hasilnya
