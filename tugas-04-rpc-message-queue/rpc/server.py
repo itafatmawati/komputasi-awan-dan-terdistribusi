@@ -17,6 +17,11 @@ def cek_saldo(user_id: str) -> float:
     # TODO 1: kembalikan saldo dari dict `saldo_user`.
     # Jika user_id tidak ada, putuskan sendiri perilakunya (mis. return 0 atau raise error)
     # dan jelaskan keputusan ini di README.md.
+
+    if (user_id not in saldo_user):
+        return 0; 
+    else:
+        return saldo_user[user_id];
     pass
 
 
