@@ -29,6 +29,18 @@ def proses_pembayaran(user_id: str, jumlah: float) -> dict:
     """Kurangi saldo user sejumlah `jumlah`. Kembalikan status hasil."""
     # TODO 2: validasi saldo cukup, kurangi saldo_user[user_id], dan kembalikan
     # dict berisi minimal {"status": "sukses"/"gagal", "saldo_akhir": ...}
+    check= cek_saldo(user_id)
+    if (check>=jumlah):
+        sisa= check-jumlah;
+
+    proses= {
+        "status": ["sukses", "gagal"],
+        "saldo_akhir": sisa
+    }
+    if sisa>=0:
+        print("Status: ", proses["status"][0])
+        print("Saldo Akhir: ", proses["saldo_akhir"])
+
     pass
 
 
