@@ -9,12 +9,22 @@ import time
 
 def main():
     # TODO 1: buat ServerProxy ke http://localhost:8000
-    proxy = None  # ganti dengan xmlrpc.client.ServerProxy(...)
+    # proxy = None  # ganti dengan xmlrpc.client.ServerProxy(...)
+
+    proxy = xmlrpc.client.ServerProxy("http://localhost:8000")
 
     print("Memanggil cek_saldo('user1') ... menunggu respons sinkron")
     start = time.time()
     # TODO 2: panggil proxy.cek_saldo("user1") dan cetak hasilnya + waktu tempuh
     #         (buktikan client BENAR-BENAR menunggu sampai server membalas)
+
+    result = proxy.cek_saldo("user1")
+
+    end = time.time()
+
+    print("Hasil: ", result ) 
+    print()
+    print("Waktu tempuh: ", end - start ,"detik")
 
     print("Memanggil proses_pembayaran('user1', 20000) ...")
     # TODO 3: panggil proxy.proses_pembayaran("user1", 20000) dan cetak hasilnya
