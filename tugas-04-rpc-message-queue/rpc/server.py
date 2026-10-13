@@ -21,7 +21,7 @@ def cek_saldo(user_id: str) -> float:
     if (user_id not in saldo_user):
         return 0; 
     else:
-        return saldo_user[user_id];
+        return saldo_user[user_id]
     pass
 
 
@@ -41,6 +41,7 @@ def proses_pembayaran(user_id: str, jumlah: float) -> dict:
         print("Status: ", proses["status"][0])
         print("Saldo Akhir: ", proses["saldo_akhir"])
 
+
     pass
 
 
@@ -48,6 +49,9 @@ def main():
     # TODO 3: buat SimpleXMLRPCServer di localhost port 8000,
     # daftarkan fungsi cek_saldo & proses_pembayaran, lalu serve_forever().
     server = SimpleXMLRPCServer(("localhost", 8000))
+    server.register_function(cek_saldo, "cek_saldo")
+    server.register_function(proses_pembayaran, "proses_pembayaran")
+
     print("RPC server modul Pembayaran berjalan di port 8000...")
     server.serve_forever()
 
