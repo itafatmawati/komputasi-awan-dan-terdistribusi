@@ -126,6 +126,9 @@ class Node:
             self.leader_id = self.node_id
         print(f"[Node {self.node_id}] TODO: broadcast COORDINATOR, saya jadi leader")
 
+        for pid, port in self.peers.items():
+            self.send_message(port, "COORDINATOR")
+
     def monitor_leader(self):
         """Loop periodik: cek apakah leader masih hidup, trigger election jika mati."""
         while True:
@@ -134,6 +137,42 @@ class Node:
             # (mis. kirim pesan "PING" atau cukup coba connect). Jika gagal
             # (leader mati) dan node ini belum tahu leader baru, panggil
             # start_election().
+
+            with self.lock:
+                current_leader =  self.leader_id
+
+            if current_leader is None or current_leader == self.node_id:
+                continue
+
+            leader_port = self.peers.get(current_leader)
+
+            if leader_port is None:
+                continue
+
+            try:
+                with socket.create_connection(("Localhost", leader_port), timeout = 1.0):
+                    leader_alive = True
+            except (ConnectionRefusedError, socket.timeout, OSError):
+                leader_alive = False
+
+            if not leader_alive:
+                with self.lock:
+                    if self.leader_id == current_leader:
+                        print(
+                            f"[Node {self.node_id}] Leader Node "
+                            f"{current_leader} tidak aktif. "
+                            "Memulai election baru."
+                        )
+                        self.leader_id = None
+                        start_new_election = True
+                    else:
+                        start_new_election = False
+
+                if start_new_election:
+                    threading.Thread(
+                        target=self.start_election,
+                        daemon=True
+                    ).start()
             pass
 
 
