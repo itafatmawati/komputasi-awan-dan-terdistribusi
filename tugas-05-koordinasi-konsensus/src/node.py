@@ -79,10 +79,15 @@ class Node:
         elif msg_type == "OK":
             with self.lock:
                 self.received_ok = True  
-                
+
         elif msg_type == "COORDINATOR":
-            with self.lock:
-                self.leader_id = sender_id
+            if sender_id > self.node_id:
+                with self.lock:
+                    self.leader_id = sender_id
+            else:
+                print(f"[Node {self.node_id}] Abaikan COORDINATOR dari node {sender_id} (ID lebih rendah)")
+                threading.Thread(target=self.start_election, daemon=True).start()
+                
         print(f"[Node {self.node_id}] Menerima pesan '{msg_type}' dari node {sender_id} (TODO: proses ini)")
 
     def start_election(self):
