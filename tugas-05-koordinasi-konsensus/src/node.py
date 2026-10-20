@@ -67,6 +67,22 @@ class Node:
         #   - "OK": tandai bahwa ada node lebih tinggi yang masih hidup, sehingga
         #     kita TIDAK boleh mendeklarasikan diri sebagai leader.
         #   - "COORDINATOR": simpan sender_id sebagai leader_id yang baru.
+
+        if msg_type == "ELECTION":
+            if self.node_id> sender_id:
+                peer_port = self.peers.get(sender_id)
+                if peer_port:
+                    self.send_message(peer_port, "OK")
+
+                threading.Thread(target=self.start_election, daemon=True).start()
+
+        elif msg_type == "OK":
+            with self.lock:
+                self.received_ok = True  
+                
+        elif msg_type == "COORDINATOR":
+            with self.lock:
+                self.leader_id = sender_id
         print(f"[Node {self.node_id}] Menerima pesan '{msg_type}' dari node {sender_id} (TODO: proses ini)")
 
     def start_election(self):
@@ -75,8 +91,32 @@ class Node:
         # Tunggu ELECTION_TIMEOUT detik untuk balasan "OK" (gunakan flag/event yang
         # diset di on_message saat menerima "OK").
         # Jika TIDAK ADA balasan "OK" dalam waktu tersebut -> panggil declare_leader().
+        with self.lock:
+            self.received_ok = False
+
         higher_peers = {pid: p for pid, p in self.peers.items() if pid > self.node_id}
         print(f"[Node {self.node_id}] TODO: mulai election ke peer lebih tinggi: {higher_peers}")
+
+        if not higher_peers:
+            self.declare_leader()
+            return
+
+        sent_success = False
+        for pid, port in higher_peers.items():
+            if self.send_message(port, "ELECTION"):
+                sent_success = True
+
+        if not sent_success:
+            self.declare_leader()
+            return
+
+        time.sleep(ELECTION_TIMEOUT)
+
+        with self.lock:
+            if not self.received_ok:
+                self.declare_leader()
+            else:
+                print(f"[Node {self.node_id}] Menerima balasan OK, menghentikan klaim leader dan menunggu COORDINATOR.")
 
     def declare_leader(self):
         """Node ini menyatakan dirinya leader dan memberi tahu semua node lain."""
