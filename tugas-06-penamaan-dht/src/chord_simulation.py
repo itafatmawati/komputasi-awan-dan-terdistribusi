@@ -32,6 +32,7 @@ class ChordRing:
 
         # TODO 1: tambahkan node_id -> node_ip ke self.nodes.
         self.nodes[node_id]=node_ip
+
         # TODO 2: cari successor LAMA dari node_id ini (successor sebelum node
         # baru bergabung, gunakan find_successor() dengan node_id INI dikecualikan
         # dulu dari self.nodes saat mencari).
@@ -40,6 +41,7 @@ class ChordRing:
             del self.nodes[node_id] 
             old_successor = self.find_successor(node_id)
             self.nodes[node_id] = node_ip
+
         # TODO 3: pindahkan semua key di self.data yang seharusnya menjadi
         # tanggung jawab node baru (key dengan hash <= node_id, tapi masih
         # dipegang oleh successor lama) ke bawah tanggung jawab node baru.
@@ -47,10 +49,21 @@ class ChordRing:
         # tidak perlu benar-benar memindahkan struktur data kompleks.)
         print(f"[TODO] Node '{node_name}' (id={node_id}) bergabung, alamat {node_ip}")
         if old_successor is not None:
+            sorted_nodes = sorted(self.nodes.keys())
+            idx = sorted_nodes.index(node_id)
+            predecessor_id = sorted_nodes[idx - 1]
+
             for key_hash, (kurir_id, ip_kurir) in list(self.data.items()):
-                if key_hash <= node_id:
+                is_owned = False
+                if predecessor_id < node_id:
+                    if predecessor_id < key_hash <= node_id:
+                        is_owned = True
+                else:  
+                    if key_hash > predecessor_id or key_hash <= node_id:
+                        is_owned = True
+
+                if is_owned:
                     print(f"  -> Data {kurir_id} (hash={key_hash}) diambil alih oleh '{node_name}' dari successor (id={old_successor})")
-    
 
     def leave(self, node_name: str):
         """Keluarkan sebuah node dari ring. Data yang dipegangnya harus
