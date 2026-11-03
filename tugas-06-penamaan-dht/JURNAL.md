@@ -1,12 +1,14 @@
 # Jurnal Proses — Tugas 6
 
 ## Implementasi find_successor
+
 - Kesalahan pertama yang ditemui (mis. lupa wrap-around di ring): typo dan kesalahan logika
 - Cara memperbaikinya: analisis kembali kode untuk menemukan letak kesalahan, lalu perbaiki.
 
 ## Skenario join/leave
-- Hasil sebelum & sesudah node baru bergabung: ...
-- Hasil sebelum & sesudah node keluar: ...
+
+- Hasil sebelum & sesudah node baru bergabung: Sebelumnya terdapat 4 node (node jakarta-1, jakarta-2, bandung-1, surabaya-1) dan kurir-001 dipegang node jakarta-2, kurir-002 dipegang node bandung-1, dan kurir-003 dipegang node surabaya-1. Setelah node baru (node-medan-1) bergabung, kurir tetap dipegang node yang sama, yang artinya tidak ada perubahan.
+- Hasil sebelum & sesudah node keluar: Sebelumnya kurir memiliki successor seperti poin pertama. Setelah node jakarta-1 keluar, tidak ada perubahan pada successor kurir dikarenakan node jakarta-1 tidak menjadi successor pada kurir manapun.
 
 ## Log Penggunaan AI (Level 2)
 
