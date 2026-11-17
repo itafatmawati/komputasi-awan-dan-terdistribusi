@@ -43,6 +43,12 @@ class ReplicationSystem:
         # threading.Timer(REPLICATION_DELAY, ...) yang memanggil
         # self.bandung.write(user_id, saldo_baru, version) setelah delay.
         print(f"[TODO] Replikasi ke Bandung akan tertunda {REPLICATION_DELAY} detik")
+        timer = threading.Timer(
+            REPLICATION_DELAY,
+            self.bandung.write,
+            args=(user_id, saldo_baru, version)
+        )
+        timer.start()
 
     def baca_saldo_naif(self, user_id: str, server: str) -> float:
         """Baca saldo TANPA mekanisme Read-Your-Writes - bisa saja stale."""
@@ -75,6 +81,7 @@ def main():
     versi_terakhir = system.version_counter
     # TODO 3: panggil baca_saldo_read_your_writes dan tunjukkan hasilnya SELALU benar
     # walau dipanggil segera setelah top_up (< REPLICATION_DELAY detik).
+
 
 
 if __name__ == "__main__":

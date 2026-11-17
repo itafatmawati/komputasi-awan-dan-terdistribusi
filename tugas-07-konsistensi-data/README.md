@@ -4,18 +4,20 @@
 
 ## Studi Kasus
 
-Data saldo *e-wallet* pelanggan FoodGo berbeda antara server wilayah **Jakarta** dan **Bandung** karena replikasi antar server berjalan lambat. Contoh kasus nyata: pelanggan top-up saldo lewat server Jakarta, lalu dalam hitungan detik memesan makanan lewat aplikasi yang tersambung ke server Bandung — saldo belum ter-update, transaksi ditolak padahal saldo sebenarnya cukup.
+Data saldo _e-wallet_ pelanggan FoodGo berbeda antara server wilayah **Jakarta** dan **Bandung** karena replikasi antar server berjalan lambat. Contoh kasus nyata: pelanggan top-up saldo lewat server Jakarta, lalu dalam hitungan detik memesan makanan lewat aplikasi yang tersambung ke server Bandung — saldo belum ter-update, transaksi ditolak padahal saldo sebenarnya cukup.
 
 ## Tugas Kelompok
 
 ### Bagian 1 — Analisis (wajib)
 
-1. Tentukan: apakah kasus ini **membutuhkan Sequential Consistency** (semua replika melihat urutan operasi yang sama) atau **cukup Eventual Consistency** (replika akan konsisten "pada akhirnya", boleh sementara berbeda)? Berikan argumen berbasis dampak bisnis (mis. kasus saldo *e-wallet* jauh lebih sensitif dibanding kasus "jumlah like" di media sosial).
-Jawab: Eventual Consistency saja tidak cukup karena dapat menyebabkan kesalahan transaksi dan membahayakan integritas data finansial. Oleh karena itu, diperlukan konsistensi yang lebih kuat, seperti Sequential Consistency untuk menjaga urutan operasi.
-2. Jika kalian menyimpulkan Eventual Consistency saja **tidak cukup** untuk skenario ini, usulkan pendekatan **Client-Centric Consistency** yang relevan (mis. *Read-Your-Writes*: pelanggan yang baru top-up harus selalu melihat saldo terbarunya sendiri, walau replika lain belum sinkron).
+1. Tentukan: apakah kasus ini **membutuhkan Sequential Consistency** (semua replika melihat urutan operasi yang sama) atau **cukup Eventual Consistency** (replika akan konsisten "pada akhirnya", boleh sementara berbeda)? Berikan argumen berbasis dampak bisnis (mis. kasus saldo _e-wallet_ jauh lebih sensitif dibanding kasus "jumlah like" di media sosial).
+   Jawab: Eventual Consistency saja tidak cukup karena dapat menyebabkan kesalahan transaksi dan membahayakan integritas data finansial. Oleh karena itu, diperlukan konsistensi yang lebih kuat, seperti Sequential Consistency untuk menjaga urutan operasi.
+2. Jika kalian menyimpulkan Eventual Consistency saja **tidak cukup** untuk skenario ini, usulkan pendekatan **Client-Centric Consistency** yang relevan (mis. _Read-Your-Writes_: pelanggan yang baru top-up harus selalu melihat saldo terbarunya sendiri, walau replika lain belum sinkron).
+   Jawab: Eventual Consistency saja tidak cukup karena membahayakan integritas data finansial dan Sequntial Consistency terlalu lambat dan high latency, maka solusi yang paling tepat ialah menggunakan pendekatan Client-Centric Consistency, khususnya Read-Your-Writes karena model ini memastikan pengguna yang melakukan write langsung melihat saldo terbarunya sendiri saat melakukan transaksi berikutnya di server manapun, tanpa harus menunggu seluruh replika server di wilayah lain selesai melakukan sinkronisasi.
 3. Gambarkan **diagram alir urutan (sequence diagram)** yang menunjukkan operasi read/write antara pelanggan, server Jakarta, server Bandung, dan proses replikasi — untuk skenario **tanpa** jaminan konsistensi (bug terjadi) DAN skenario **dengan** solusi yang kalian usulkan (bug teratasi). Pakai Mermaid (`sequenceDiagram`) di `README.md` — lihat contoh cara pakai di Tugas 2.
 
-**tanpa** jaminan konsistensi:
+- **tanpa** jaminan konsistensi:
+
 ```mermaid
     sequenceDiagram
    title Skenario tanpa jaminan konsistensi
@@ -35,9 +37,37 @@ Jawab: Eventual Consistency saja tidak cukup karena dapat menyebabkan kesalahan 
     note over User, Server Bandung : Saldo konsisten
 ```
 
+- **dengan** read-your-writes
+
+```mermaid
+    sequenceDiagram
+   title Read-Your-Writes Consistency (Bug Teratasi)
+
+    actor User
+
+    note over User: Saldo 50.000
+
+    User->>Server Jakarta: Top-Up 50.000
+    Server Jakarta ->> Server Jakarta : Update Saldo: 100.000
+    Server Jakarta -->> User : Top-Up berhasil
+
+    User ->>Server Bandung : Pesan makanan 70.000
+    Server Bandung ->>Server Bandung : Baca saldo lokal 50.000
+
+    note over Server Bandung: Data belum diperbarui
+    Server Bandung->> Server Jakarta: Minta saldo terbaru
+    Server Jakarta-->> Server Bandung: Kirim saldo Rp100.000
+    Server Bandung->> Server Bandung: Validasi saldo (Cukup)
+    Server Bandung-->>User: Transaksi berhasil, sisa saldo Rp30.000
+
+    Poses Replikasi ->> Server Bandung: Replikasi saldo terbaru
+    note over Server Jakarta,Server Bandung: Kedua server konsisten
+```
+
 ### Bagian 2 — Simulasi (opsional, nilai tambah)
 
 Skeleton `src/replica_simulation.py` mensimulasikan dua replika (Jakarta & Bandung) dengan delay replikasi buatan. Lengkapi TODO untuk:
+
 1. Menunjukkan kondisi **inconsistent read** (replika Bandung masih menunjukkan saldo lama walau Jakarta sudah update).
 2. Mengimplementasikan mekanisme **Read-Your-Writes** sederhana (mis. dengan version/timestamp per client) yang memperbaiki masalah tersebut.
 
@@ -57,12 +87,12 @@ tugas-07-konsistensi-data/
 
 ## Rubrik Penilaian (Tugas 7)
 
-| Komponen | Bobot | Kriteria |
-|---|---|---|
-| Ketepatan pemilihan model konsistensi | 30% | Argumen berbasis dampak bisnis nyata, bukan hafalan definisi |
-| Kualitas sequence diagram | 30% | Menunjukkan jelas titik kegagalan & titik perbaikan |
-| Usulan solusi client-centric | 25% | Solusi konkret dan dapat diimplementasikan (bukan wacana abstrak) |
-| Proses & kontribusi kelompok | 15% | `JURNAL.md`, commit history (+ bonus jika simulasi dikerjakan) |
+| Komponen                              | Bobot | Kriteria                                                          |
+| ------------------------------------- | ----- | ----------------------------------------------------------------- |
+| Ketepatan pemilihan model konsistensi | 30%   | Argumen berbasis dampak bisnis nyata, bukan hafalan definisi      |
+| Kualitas sequence diagram             | 30%   | Menunjukkan jelas titik kegagalan & titik perbaikan               |
+| Usulan solusi client-centric          | 25%   | Solusi konkret dan dapat diimplementasikan (bukan wacana abstrak) |
+| Proses & kontribusi kelompok          | 15%   | `JURNAL.md`, commit history (+ bonus jika simulasi dikerjakan)    |
 
 ## Batasan Penggunaan AI (Level 2)
 
