@@ -11,8 +11,29 @@ Data saldo *e-wallet* pelanggan FoodGo berbeda antara server wilayah **Jakarta**
 ### Bagian 1 — Analisis (wajib)
 
 1. Tentukan: apakah kasus ini **membutuhkan Sequential Consistency** (semua replika melihat urutan operasi yang sama) atau **cukup Eventual Consistency** (replika akan konsisten "pada akhirnya", boleh sementara berbeda)? Berikan argumen berbasis dampak bisnis (mis. kasus saldo *e-wallet* jauh lebih sensitif dibanding kasus "jumlah like" di media sosial).
+Jawab: Eventual Consistency saja tidak cukup karena dapat menyebabkan kesalahan transaksi dan membahayakan integritas data finansial. Oleh karena itu, diperlukan konsistensi yang lebih kuat, seperti Sequential Consistency untuk menjaga urutan operasi.
 2. Jika kalian menyimpulkan Eventual Consistency saja **tidak cukup** untuk skenario ini, usulkan pendekatan **Client-Centric Consistency** yang relevan (mis. *Read-Your-Writes*: pelanggan yang baru top-up harus selalu melihat saldo terbarunya sendiri, walau replika lain belum sinkron).
 3. Gambarkan **diagram alir urutan (sequence diagram)** yang menunjukkan operasi read/write antara pelanggan, server Jakarta, server Bandung, dan proses replikasi — untuk skenario **tanpa** jaminan konsistensi (bug terjadi) DAN skenario **dengan** solusi yang kalian usulkan (bug teratasi). Pakai Mermaid (`sequenceDiagram`) di `README.md` — lihat contoh cara pakai di Tugas 2.
+
+**tanpa** jaminan konsistensi:
+```mermaid
+    sequenceDiagram
+   title Skenario tanpa jaminan konsistensi
+
+    actor User
+
+    note over User: Saldo 50.000
+    User->>Server Jakarta: Top-Up 50.000
+    Server Jakarta ->> Server Jakarta : Update Saldo: 100.000
+    Server Jakarta -->> User : Top-Up berhasil
+    Server Jakarta ->> Proses Replikasi : Update saldo 100.000
+    User ->> Server Bandung : Pesan makanan 70.000
+    Server Bandung ->> Server Bandung : Baca saldo 50.000
+    Server Bandung -->> User : Transaksi ditolak, saldo tidak cukup
+    Proses Replikasi ->> Server Bandung : Replikasi saldo 100.000
+    Server Bandung ->> Server Bandung : Update saldo 100.000
+    note over User, Server Bandung : Saldo konsisten
+```
 
 ### Bagian 2 — Simulasi (opsional, nilai tambah)
 
