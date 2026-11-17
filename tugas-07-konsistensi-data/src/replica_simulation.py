@@ -61,7 +61,14 @@ class ReplicationSystem:
         melihat versi lebih baru sebelumnya), tunggu/redirect ke replika yang
         sudah punya versi tersebut (di sini cukup simulasikan dengan polling
         sampai versi replika >= versi_minimal, atau redirect ke Jakarta)."""
-        pass
+
+        replica = self.jakarta if server == "Jakarta" else self.bandung
+        
+        while replica.last_write_version.get(user_id, 0) < versi_minimal:
+            print(f"[{replica.name}] Versi lokal tertinggal (< {versi_minimal}). Menunggu sinkronisasi...")
+            time.sleep(0.2)
+            
+        return replica.read(user_id)
 
 
 def main():
@@ -81,7 +88,8 @@ def main():
     versi_terakhir = system.version_counter
     # TODO 3: panggil baca_saldo_read_your_writes dan tunjukkan hasilnya SELALU benar
     # walau dipanggil segera setelah top_up (< REPLICATION_DELAY detik).
-
+    saldo_aktual = system.baca_saldo_read_your_writes(user_id, "Bandung", versi_terakhir)
+    print("Baca saldo dari Bandung (Read-Your-Writes):", saldo_aktual)
 
 
 if __name__ == "__main__":
